@@ -47,6 +47,11 @@ refresh.sh
 # define pacman packages
 pacman_packages="base-devel rust kmod openvpn privoxy ipcalc wireguard-tools openresolv libnatpmp ldns"
 
+# remove systemd-resolvconf on arm64 — conflicts with openresolv
+if [[ "${TARGETARCH}" == "arm64" ]]; then
+	pacman -Rdd systemd-resolvconf --noconfirm 2>/dev/null || true
+fi
+
 # install pre-reqs
 pacman -S --needed $pacman_packages --noconfirm
 
