@@ -1033,12 +1033,12 @@ function get_vpn_incoming_port() {
 			JQ_QUERY_PORT_FORWARD_ENABLED='.regions | .[] | select(.port_forward==true) | .dns'
 
 			# check whether endpoint is enabled for port forwarding
-			if pia_port_forward_check; then
+			# if serverlist API is down we proceed anyway - port assignment uses
+			# the VPN gateway directly and does not depend on the serverlist API
+			pia_port_forward_check || echo "[info] PIA serverlist API unavailable, attempting port assignment anyway"
 
-				# assign incoming port - blocking as in infinite while loop
-				pia_assign_incoming_port
-
-			fi
+			# assign incoming port - blocking as in infinite while loop
+			pia_assign_incoming_port
 
 			echo "[info] Script finished to assign incoming port"
 
